@@ -1,0 +1,72 @@
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int main()
+{
+    char matrix[5][5] = {
+        {'M','F','H','I','K'},
+        {'U','N','O','P','Q'},
+        {'Z','V','W','X','Y'},
+        {'E','L','A','R','G'},
+        {'D','S','T','B','C'}
+    };
+
+    char text[] = "Must see you over Cadogan West. Coming at once.";
+    char a, b;
+    int i, j, r1, c1, r2, c2;
+
+    printf("Encrypted Message: ");
+
+    for(i = 0; text[i]; i++)
+    {
+        if(!isalpha(text[i]))
+            continue;
+
+        a = toupper(text[i]);
+        if(a == 'J') a = 'I';
+
+        j = i + 1;
+        while(text[j] && !isalpha(text[j]))
+            j++;
+
+        if(text[j])
+            b = toupper(text[j]);
+        else
+            b = 'X';
+
+        if(b == 'J') b = 'I';
+
+        for(int k = 0; k < 25; k++)
+        {
+            if(matrix[k/5][k%5] == a)
+                r1 = k/5, c1 = k%5;
+
+            if(matrix[k/5][k%5] == b)
+                r2 = k/5, c2 = k%5;
+        }
+
+        if(r1 == r2)
+            printf("%c%c", matrix[r1][(c1+1)%5],
+                           matrix[r2][(c2+1)%5]);
+        else if(c1 == c2)
+            printf("%c%c", matrix[(r1+1)%5][c1],
+                           matrix[(r2+1)%5][c2]);
+        else
+            printf("%c%c", matrix[r1][c2],
+                           matrix[r2][c1]);
+
+        i = j;
+    }
+
+    printf("\n");
+    return 0;
+}
+
+
+Input:
+Must see you over Cadogan West. Coming at once.
+
+Output:
+Encrypted Message:

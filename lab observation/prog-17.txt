@@ -1,0 +1,57 @@
+
+#include <stdio.h>
+#include <stdint.h>
+
+int main()
+{
+    uint32_t C = 0x0F0F0F0, D = 0x0F0F0F0;
+    int shifts[16] = {1,1,2,2,2,2,2,2,
+                      1,2,2,2,2,2,2,1};
+    uint64_t keys[16];
+    int i, j, s;
+
+    int PC2[48] = {
+        14,17,11,24,1,5,3,28,15,6,21,10,
+        23,19,12,4,26,8,16,7,27,20,13,2,
+        41,52,31,37,47,55,30,40,51,45,33,48,
+        44,49,39,56,34,53,46,42,50,36,29,32
+    };
+
+    // Generate encryption subkeys
+    for(i = 0; i < 16; i++)
+    {
+        s = shifts[i];
+
+        C = ((C << s) | (C >> (28 - s))) & 0x0FFFFFFF;
+        D = ((D << s) | (D >> (28 - s))) & 0x0FFFFFFF;
+
+        uint64_t CD = ((uint64_t)C << 28) | D;
+        keys[i] = 0;
+
+        for(j = 0; j < 48; j++)
+            keys[i] = (keys[i] << 1) |
+                      ((CD >> (56 - PC2[j])) & 1);
+    }
+
+    // Display subkeys in reverse order for decryption
+    printf("DES Decryption Round Keys:\n");
+
+    for(i = 15; i >= 0; i--)
+        printf("K%d = %012llX\n", i+1,
+               (unsigned long long)keys[i]);
+
+    return 0;
+}
+
+
+Input:
+No input required.
+
+Output:
+DES Decryption Round Keys:
+K16 = [Generated key]
+K15 = [Generated key]
+K14 = [Generated key]
+...
+K2  = [Generated key]
+K1  = [Generated key]

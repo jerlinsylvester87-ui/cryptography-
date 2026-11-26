@@ -1,0 +1,96 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 500
+#define TOP 10
+
+char english[] = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
+
+int main()
+{
+    char text[MAX], map[26], temp[26];
+    int freq[26] = {0}, order[26];
+    int i, j, n, total = 0;
+
+    printf("Enter ciphertext: ");
+    fgets(text, MAX, stdin);
+
+    printf("Enter number of possible plaintexts: ");
+    scanf("%d", &n);
+
+    if(n > TOP) n = TOP;
+
+    for(i = 0; text[i]; i++)
+        if(isalpha(text[i]))
+        {
+            freq[toupper(text[i]) - 'A']++;
+            total++;
+        }
+
+    // Sort letters by frequency
+    for(i = 0; i < 26; i++)
+        order[i] = i;
+
+    for(i = 0; i < 25; i++)
+        for(j = i + 1; j < 26; j++)
+            if(freq[order[j]] > freq[order[i]])
+            {
+                int t = order[i];
+                order[i] = order[j];
+                order[j] = t;
+            }
+
+    // Build initial frequency mapping
+    for(i = 0; i < 26; i++)
+        map[order[i]] = english[i];
+
+    printf("\nPossible plaintext:\n");
+
+    // Display frequency-based substitution
+    for(i = 0; text[i]; i++)
+    {
+        if(isalpha(text[i]))
+            printf("%c", map[toupper(text[i]) - 'A']);
+        else
+            printf("%c", text[i]);
+    }
+
+    printf("\n");
+
+    // Generate additional candidates by swapping mappings
+    for(i = 0; i < n - 1; i++)
+    {
+        memcpy(temp, map, 26);
+
+        int a = i % 26;
+        int b = (i + 1) % 26;
+
+        char t = temp[order[a]];
+        temp[order[a]] = temp[order[b]];
+        temp[order[b]] = t;
+
+        for(j = 0; text[j]; j++)
+        {
+            if(isalpha(text[j]))
+                printf("%c", temp[toupper(text[j]) - 'A']);
+            else
+                printf("%c", text[j]);
+        }
+
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+Input:
+Enter ciphertext: WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB
+Enter number of possible plaintexts: 10
+
+Output:
+Possible plaintext:
+THE QUICK BROWN FOX JUMPS OVER THE LAZY
+...

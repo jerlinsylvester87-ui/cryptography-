@@ -1,0 +1,70 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char C[29] = "0000000000000000000000000001";
+    char D[29] = "0000000000000000000000000010";
+    int PC2[48] = {
+        14,17,11,24,1,5,3,28,15,6,21,10,
+        23,19,12,4,26,8,16,7,27,20,13,2,
+        41,52,31,37,47,55,30,40,51,45,33,48,
+        44,49,39,56,34,53,46,42,50,36,29,32
+    };
+    int shifts[16] = {1,1,2,2,2,2,2,2,
+                      1,2,2,2,2,2,2,1};
+    char CD[57], key[49];
+    int i, j, s;
+
+    for(i = 0; i < 16; i++)
+    {
+        s = shifts[i];
+
+        // Circular left shift of C
+        char tempC[29];
+        strcpy(tempC, C);
+        for(j = 0; j < 28; j++)
+            C[j] = tempC[(j+s)%28];
+        C[28] = '\0';
+
+        // Circular left shift of D
+        char tempD[29];
+        strcpy(tempD, D);
+        for(j = 0; j < 28; j++)
+            D[j] = tempD[(j+s)%28];
+        D[28] = '\0';
+
+        // Combine the two halves
+        strcpy(CD, C);
+        strcat(CD, D);
+
+        // Apply PC-2 permutation
+        for(j = 0; j < 48; j++)
+            key[j] = CD[PC2[j]-1];
+
+        key[48] = '\0';
+
+        printf("K%d = ", i+1);
+        for(j = 0; j < 48; j++)
+        {
+            printf("%c", key[j]);
+            if(j == 23)
+                printf(" ");
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+Input:
+No input required.
+
+Output:
+K1 = 000000000000000000001000 000000000000000000000000
+K2 = 000000000000000010000000 000000000000000001000000
+K3 = 000100000000000000000000 000000001000000000000000
+...
+K16 = 000000010000000000000000 000001000000000000000000

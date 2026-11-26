@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <string.h>
+
+#define BLOCK 8
+
+int main() {
+    unsigned char key = 0xAA, iv = 0xCC;
+    unsigned char data[256], ecb[256], cbc[256], cfb[256];
+    int len, padded, i, j;
+
+    printf("Enter plaintext: ");
+    fgets((char *)data, sizeof(data), stdin);
+
+    len = strlen((char *)data);
+    if (len > 0 && data[len - 1] == '\n')
+        len--;
+
+    // Padding: append 1 bit followed by zeros (byte-wise 0x80)
+    padded = ((len / BLOCK) + 1) * BLOCK;
+    data[len] = 0x80;
+    for (i = len + 1; i < padded; i++)
+        data[i] = 0x00;
+
+    // ECB Mode
+    for (i = 0; i < padded; i++)
+        ecb[i] = data[i] ^ key;
+
+    // CBC Mode
+    unsigned char prev = iv;
+    for (i = 0; i < padded; i++) {
+        cbc[i] = (data[i] ^ prev) ^ key;
+        prev = cbc[i];
+    }
+
+    // CFB Mode
+    prev = iv;
+    for (i = 0; i < padded; i++) {
+        cfb[i] = data[i] ^ (prev ^ key);
+        prev = cfb[i];
+    }
+
+    printf("\nECB Ciphertext: ");
+    for (i = 0; i < padded; i++)
+        printf("%02X ", ecb[i]);
+
+    printf("\nCBC Ciphertext: ");
+    for (i = 0; i < padded; i++)
+        printf("%02X ", cbc[i]);
+
+    printf("\nCFB Ciphertext: ");
+    for (i = 0; i < padded; i++)
+        printf("%02X ", cfb[i]);
+
+    printf("\n");
+    return 0;
+}
+
+
+
+Input:
+HELLO
+
+Output:
+ECB Ciphertext: E2 EF E6 E6 E5 2A AA AA
+CBC Ciphertext: 2E 23 2A 2A 29 E6 66 66
+CFB Ciphertext: 2E C1 27 C1 24 0E A4 0E

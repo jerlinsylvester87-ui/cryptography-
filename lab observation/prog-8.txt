@@ -1,0 +1,64 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char keyword[] = "CIPHER";
+    char cipher[27], plain[27];
+    char text[100];
+    int i, j, k = 0;
+
+    // Generate cipher sequence
+    for(i = 0; keyword[i] != '\0'; i++)
+    {
+        if(strchr(cipher, keyword[i]) == NULL)
+            cipher[k++] = keyword[i];
+    }
+
+    for(i = 0; i < 26; i++)
+    {
+        char ch = 'A' + i;
+        if(strchr(keyword, ch) == NULL)
+            cipher[k++] = ch;
+    }
+    cipher[k] = '\0';
+
+    // Generate plaintext sequence
+    for(i = 0; i < 26; i++)
+        plain[i] = 'A' + i;
+    plain[26] = '\0';
+
+    printf("Plaintext : %s\n", plain);
+    printf("Ciphertext: %s\n", cipher);
+
+    printf("\nEnter plaintext: ");
+    fgets(text, sizeof(text), stdin);
+
+    // Encryption
+    printf("Encrypted text: ");
+    for(i = 0; text[i] != '\0'; i++)
+    {
+        if(isalpha(text[i]))
+        {
+            char ch = toupper(text[i]);
+            printf("%c", cipher[ch - 'A']);
+        }
+        else
+            printf("%c", text[i]);
+    }
+
+    printf("\n");
+    return 0;
+}
+
+Input:
+Enter plaintext: HELLO WORLD
+
+Output:
+Plaintext : ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Ciphertext: CIPHERABDGJKLMNOQSTUVWXYZ
+
+Enter plaintext: HELLO WORLD
+Encrypted text: BEJJM VMQJH

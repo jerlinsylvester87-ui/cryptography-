@@ -1,0 +1,51 @@
+
+#include <stdio.h>
+
+int main()
+{
+    int key[2][2] = {{9,4},{5,7}};
+    int p[2][2] = {{1,0},{0,1}};
+    int c[2][2], i, j;
+
+    printf("Chosen Plaintext: BA, AB\n");
+
+    // Encrypt chosen plaintext blocks
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 2; j++)
+            c[i][j] = (key[i][0]*p[0][j] +
+                       key[i][1]*p[1][j]) % 26;
+    }
+
+    printf("Ciphertext: ");
+
+    for(j = 0; j < 2; j++)
+    {
+        for(i = 0; i < 2; i++)
+            printf("%c", c[i][j] + 'A');
+        printf(" ");
+    }
+
+    // Recover key using chosen plaintext
+    printf("\nRecovered Key Matrix:\n");
+
+    for(i = 0; i < 2; i++)
+    {
+        for(j = 0; j < 2; j++)
+            printf("%d ", c[i][j]);
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+Input:
+No input required.
+
+Output:
+Chosen Plaintext: BA, AB
+Ciphertext: JF EH
+Recovered Key Matrix:
+9 4
+5 7

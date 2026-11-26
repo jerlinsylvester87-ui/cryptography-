@@ -1,0 +1,34 @@
+
+#include <stdio.h>
+
+int main()
+{
+    printf("CBC Ciphertext Error Demonstration\n\n");
+
+    printf("If an error occurs in transmitted C1:\n");
+    printf("P1: Corrupted\n");
+    printf("P2: One corresponding bit is flipped\n");
+    printf("P3 onwards: Unaffected\n\n");
+
+    printf("If a bit error occurs in source P1:\n");
+    printf("C1 onwards: All ciphertext blocks are affected\n");
+    printf("Receiver: All plaintext blocks are corrupted\n");
+
+    return 0;
+}
+
+
+Input:
+No input required.
+
+Output:
+CBC Ciphertext Error Demonstration
+
+If an error occurs in transmitted C1:
+P1: Corrupted
+P2: One corresponding bit is flipped
+P3 onwards: Unaffected
+
+If a bit error occurs in source P1:
+C1 onwards: All ciphertext blocks are affected
+Receiver: All plaintext blocks are corrupted

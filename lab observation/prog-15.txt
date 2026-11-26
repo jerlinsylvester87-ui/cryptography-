@@ -1,0 +1,56 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char text[500];
+    int shift, i, n;
+
+    printf("Enter ciphertext: ");
+    fgets(text, sizeof(text), stdin);
+
+    printf("Enter number of possible plaintexts: ");
+    scanf("%d", &n);
+
+    printf("\nPossible plaintexts:\n");
+
+    for(shift = 0; shift < n && shift < 26; shift++)
+    {
+        printf("Key %2d: ", shift);
+
+        for(i = 0; text[i] != '\0'; i++)
+        {
+            if(isalpha(text[i]))
+            {
+                char ch = toupper(text[i]);
+                printf("%c", (ch - 'A' - shift + 26) % 26 + 'A');
+            }
+            else
+                printf("%c", text[i]);
+        }
+
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+Input:
+Enter ciphertext: KHOOR ZRUOG
+Enter number of possible plaintexts: 10
+
+Output:
+Possible plaintexts:
+Key  0: KHOOR ZRUOG
+Key  1: JGNNQ YQTNF
+Key  2: IFMMP XPSME
+Key  3: HELLO WORLD
+Key  4: GDKKN VNQKC
+Key  5: FCJJM UMPJB
+Key  6: EBIIL TLOIA
+Key  7: DAHHK SKNHZ
+Key  8: CZGGJ RJMGY
+Key  9: BYFFI QILFX

@@ -1,0 +1,82 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main()
+{
+    char key[] = "PT109";
+    char text[] = "KXJEYUREBEZWEHEWRYTUHEYFS"
+                 "KREHEGOYFIWTTTUOLKSYCAJPO"
+                 "BOTEIZONTXBYBNTGONEYCUZWR"
+                 "GDSONSXBOUYWRHEBAAHYUSEDQ";
+
+    char matrix[5][5];
+    int used[26] = {0};
+    int i, j, k = 0;
+
+    for(i = 0; key[i]; i++)
+    {
+        char ch = toupper(key[i]);
+        if(ch >= 'A' && ch <= 'Z')
+        {
+            if(ch == 'J') ch = 'I';
+            if(!used[ch - 'A'])
+            {
+                matrix[k/5][k%5] = ch;
+                used[ch-'A'] = 1;
+                k++;
+            }
+        }
+    }
+
+    for(i = 0; i < 26; i++)
+    {
+        if(i == 9) continue;
+        if(!used[i])
+        {
+            matrix[k/5][k%5] = 'A' + i;
+            k++;
+        }
+    }
+
+    printf("Decrypted Message: ");
+
+    for(i = 0; text[i] && text[i+1]; i += 2)
+    {
+        char a = text[i], b = text[i+1];
+        int r1, c1, r2, c2;
+
+        for(j = 0; j < 25; j++)
+        {
+            if(matrix[j/5][j%5] == a)
+                r1 = j/5, c1 = j%5;
+
+            if(matrix[j/5][j%5] == b)
+                r2 = j/5, c2 = j%5;
+        }
+
+        if(r1 == r2)
+            printf("%c%c", matrix[r1][(c1+4)%5],
+                           matrix[r2][(c2+4)%5]);
+        else if(c1 == c2)
+            printf("%c%c", matrix[(r1+4)%5][c1],
+                           matrix[(r2+4)%5][c2]);
+        else
+            printf("%c%c", matrix[r1][c2],
+                           matrix[r2][c1]);
+    }
+
+    printf("\n");
+    return 0;
+}
+
+Input:
+KXJEY UREBE ZWEHE WRYTU HEYFS
+KREHE GOYFI WTTTU OLKSY CAJPO
+BOTEI ZONTX BYBNT GONEY CUZWR
+GDSON SXBOU YWRHE BAAHY USEDQ
+
+Output:
+Decrypted Message:
+[Decrypted text depends on the correct Playfair key.]
